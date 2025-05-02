@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Exploring Meteorite Landings</title>
+		<script type="text/javascript" src="https://d3js.org/d3.v7.js"></script>
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+		<script src="https://unpkg.com/topojson-client@3"></script>
+
+		<style type="text/css">
+			body { 
+				font-family: sans-serif;
+				background-color: white;
+			}
+			body > div {
+				text-align: center;
+			}
+			body > div:first-of-type {
+  				background-color: #f7f7f7;
+  				padding: .8rem;
+				line-height: .5;
+			}
+			/* for hyperlinks */
+            a.custom-link {
+            	color: blue;
+            	text-decoration: none;
+            }
+			.header {
+				position: relative;    /* make it the positioning context */
+				padding: 1rem;
+				background: #f7f7f7;
+			}
+			.header-links {
+				position: absolute;
+				top: 1rem;
+				right: 1rem;
+				display: flex;
+				flex-direction: column;  /* stack vertically */
+				gap: 1rem;
+			}
+			.header-links a {
+				font-size: 1rem;
+				color: blue;
+				text-decoration: underline;
+			}
+
+			.tooltip {
+				position: absolute;
+				pointer-events: none;
+				background: rgba(255,255,255,0.9);
+				padding: 5px;
+				border: 1px solid #333;
+				font-size: 12px;
+				text-align: left;
+			}
+			#map_section { 
+				position: relative;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			/* Caption paragraph immediately after #map */
+			#map_section > p {
+				display: inline-block;
+				max-width: 1200px; 
+				margin: 1rem auto 0;
+				text-align: left;
+				margin-bottom: 5rem;
+			}
+			/* #map is now the positioning context */
+			#map {
+				display: inline-block;
+				background-color: white;
+				position: relative; /* make #controls position: absolute take #map as its reference */
+				max-width: 100%;
+				/*border: 1px solid #333;*/
+			}
+			#map svg {
+				display: block;           
+				border: 1px solid #333;
+				background-color: white;  
+			}
+			#controls {
+				position: absolute;
+				top: 107px;
+				left: 240px;
+				z-index: 10;
+ 			}
+			#reset {
+				padding: 4px 8px;
+				font-size: 14px;
+			}			
+			#legend {
+				font-family: sans-serif;
+				display: flex;
+				flex-wrap: wrap;       /* allow wrapping if the line is too long */
+				align-items: center;   /* vertically center text, swatch, and checkbox */
+				gap: 1rem;
+				margin-bottom: 1rem;
+			}
+			#legend label {
+				display: flex;
+				align-items: center;
+				gap: 0.25rem;
+				margin-bottom: .25rem;
+				cursor: pointer;
+				user-select: none;
+			}
+			/* map legend*/
+			.legend-swatch {
+                width: 1em;
+                height: 1em;
+                border: 1px solid #333;
+				margin-left: 0.5rem;
+            }
+            /* Line up checkbox with swatch and label */
+            .legend-checkbox {
+                margin-left: 0.25em;
+                vertical-align: middle;
+            }
+			#hist_section {
+				position: relative;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			#hist_section > p {
+				display: block; 
+				max-width: 1118px;
+				margin: .6rem auto 0;
+				/*padding-left: 60px; */
+				text-align: left;
+				margin-bottom: 2.5rem;
+			}
+			#hist_section h2 {
+				margin-bottom: 0.50rem;
+				margin-top: 0;
+			}
+			#histogram svg {
+				overflow: visible;
+  				margin-bottom: 1rem;
+			}
+			#histogram {
+				margin-top: 0;
+				display: inline-block;
+				width: 1200px;
+				margin: 1rem auto 0;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div>
+			<h2>Meteorite Insights: An Interactive Exploration of <a 
+				href = "https://www.lpi.usra.edu/meteor/"
+				class="custom-link" 
+				target="_blank" 
+				rel="noopener noreferrer">
+				The Meteoritical Society's</a> 
+				Meteorite Landings Data
+			</h2>
+			<h3><em>Global Map and Mass Histogram (NASA, through 2016)</em></h2>
+			<div class="header-links">
+				<a href="Project_Documentation.html" target="_blank" rel="noopener">Documentation</a>
+				<a href="videos/demo_video.mp4"            target="_blank" rel="noopener">Demo Video</a>
+				<a href="Meteorite-landings-final.html" target="_blank" rel="noopener">R Analysis</a>
+			 </div>
+		</div>  	
+		<section class = "viz_section" id = "map_section">
+			<h2>Meteorite Locations</h2>
+			<!-- Create the legend for the map -->
+			<div id = "legend">
+				<label>
+					<strong>Filter by type:</strong>
+                    <span class="legend-swatch"></span>
+                    Stony: Achondrite
+					<input type="checkbox" class="legend-checkbox" value="Stony: Achondrite" checked>
+				</label>
+				<label>
+                    <span class="legend-swatch"></span>
+                    Stony: Chondrite
+					<input type="checkbox" class="legend-checkbox" value="Stony: Chondrite" checked>
+				</label>
+				<label>
+                    <span class="legend-swatch"></span>
+                    Stony-iron
+					<input type="checkbox" class="legend-checkbox" value="Stony-iron" checked>
+                </label>
+				<label>
+                   <span class="legend-swatch"></span>
+                    Iron
+					<input type="checkbox" class="legend-checkbox" value="Iron" checked>
+				</label>
+				<label>
+                    <span class="legend-swatch"></span>
+                    Other
+					<input type="checkbox" class="legend-checkbox" value="Other" checked>
+                </label>
+			</div>
+
+			<div id = "map"></div>
+				<!-- Reset button for map -->
+				<div id="controls">
+					<button id="reset">Reset View</button>
+			</div>
+           
+			<p> Data: <a href="https://www.kaggle.com/datasets/nasa/meteorite-landings/data" class="custom-link">Kaggle</a>.
+				This world map plots the locations of 44,010 meteorites (of 45,716 named specimens) with valid 
+				latitude, longitude, and mass records. Each point is colored by meteorite type—Stony, Stony-Iron, 
+				Iron, or Other. Stony meteorites make up 98% of the total and are divided into two groups- chondrites
+				 and achondrites- based on their physical and chemical properties. Hovering over a point reveals a 
+				 tooltip with the meteorite’s data, including its recommended class (e.g. H5, howardite, 
+				 IAB complex, etc.) and its Fall status- whether the specimen “Fell” (observed during descent) or was
+				  simply “Found”. 
+				</p>
+		</section>
+
+		<section class = "viz_section" id = "hist_section">
+			<h2>Meteorite Mass Distribution</h2>
+			<div id="histogram"></div>
+			<p>Data: <a href="https://www.kaggle.com/datasets/nasa/meteorite-landings/data" class="custom-link">Kaggle</a>.
+				Stacked histogram of meteorite log₁₀ mass by type. Because the mass span (0.01 g to 60 000 000 g) covers 
+				almost ten orders of magnitude, a log₁₀ scale was used. The tooltip shows each bin range, the 
+				equivalent mass range using SI-prefix notation, and count by meteorite type. The most massive meteorites 
+				(6.8 - 7.8) are type Iron.</p>
+		</section>
+
+		<script type="text/javascript">
+		//Map
+		//Width and height
+		var w = 1200;
+
+		// Tooltip
+		var tooltip = d3.select("body")
+			.append("div")
+				.attr("class","tooltip")
+				.style("opacity", 0);	
+	
+			// world map land
+            d3.json("https://unpkg.com/world-atlas@2/land-50m.json").then(worldData => {
+				const land = topojson.feature(worldData, worldData.objects.land);
+
+				var projection = d3.geoEquirectangular()
+					.precision(0.1)
+					.fitWidth(w, land);
+
+				var path = d3.geoPath()
+					.projection(projection);
+
+				const [[, y0], [, y1]] = path.bounds(land);
+				const height = Math.ceil(y1 - y0);
+		
+				// create svg canvas
+				var svg1 = d3.select("#map")
+					.append("svg")
+						.attr("width", w)
+						.attr("height", height);		
+
+				var mapGroup = svg1.append("g");
+
+				mapGroup.append("path")
+					.datum(land)
+					.attr("d", path)
+					.attr("fill", "#ccc")
+					.attr("stroke", "#333");
+
+				// Define the zoom and pan
+				var zoom = d3.zoom()
+					.scaleExtent([1, 8])
+					.translateExtent([[0, 0], [w, height]])
+					.on("zoom", (event) => {
+						mapGroup.attr("transform", event.transform);
+						//currentScale = event.transform.k;
+						//mapGroup.selectAll("circle")
+							//.style("pointer-events", "all");
+					});
+
+				// Pan & zoom behavior
+				svg1.call(zoom);
+
+				// Reset button behavior
+				d3.select("#reset").on("click", () => {
+					svg1.transition()
+						.duration(750)
+						.call(zoom.transform, d3.zoomIdentity);
+				});
+				
+				// Bind data from csv file
+				d3.csv("updated_meteor_data.csv", d => ({
+					rec_long: +d.rec_long,
+					rec_lat:  +d.rec_lat,
+					meteorite_type: d.meteorite_type,
+					meteorite_class: d.meteorite_class,
+					rec_class: d.rec_class,
+					year: d.year,
+					name: d.name,
+  					mass: +d.mass,
+					id: +d.id,
+					fall: d.fall,})).then(meteorData => {
+					// Break Stony type into groups
+					meteorData.forEach(d => {
+ 						d.category = d.meteorite_type === "Stony"
+    					? `Stony: ${d.meteorite_class}`
+    					: d.meteorite_type;
+					});
+
+					var categories = Array.from(
+						new Set(meteorData.map(d => d.category)));
+
+					// use hues from Okabe–Ito 8-color palette to encode type
+					var color = d3.scaleOrdinal()
+						.domain(categories)
+						.range([
+						"#0072B2", // orange Stony: Achondrite
+						"#D55E00", // blue Stony: Chondrite 
+						"#F0E442", // lavender Stony-iron
+						"#CC79A7", // yellow Iron
+						"#009E73", // green Other
+						]);
+
+					// Draw circles for each meteorite
+					var jitter = 3;
+					mapGroup.selectAll("circle.meteor")
+						.data(meteorData)
+						.enter().append("circle")
+							.attr("class", d => 
+								`meteor category-${d.category.replace(/[:\s]/g, "_")}`)
+							//.attr("cx", d => projection([d.rec_long, d.rec_lat])[0])
+							//.attr("cy", d => projection([d.rec_long, d.rec_lat])[1])
+							.attr("cx", d => {
+								var x = projection([d.rec_long, d.rec_lat])[0];
+								return x + (Math.random() - 0.5) * jitter;
+							})
+							.attr("cy", d => {
+								var y = projection([d.rec_long, d.rec_lat])[1];
+								return y + (Math.random() - 0.5) * jitter;
+							})
+							.attr("r", 3)
+							.attr("fill", d => color(d.category))
+							.attr("stroke", "black")       
+							.attr("stroke-width", 0.2)
+							.style("pointer-events", "all")  
+						.on("mouseover", (event, d) => {
+							//if (currentScale <= showAt) return;
+							tooltip.transition().duration(200).style("opacity", .9);
+							tooltip.html(`
+								<strong>Name:</strong> ${d.name}<br/>
+								<strong>ID:</strong> ${d.id}<br/>
+								<strong>Mass (g):</strong> ${d.mass}<br/>
+								<strong>Type:</strong> ${
+    								["Chondrite","Achondrite"].includes(d.meteorite_class)
+      								? d.meteorite_type + ", "
+      								: "" }${d.meteorite_class}<br/>
+								<strong>Class:</strong> ${d.rec_class}<br/>
+								<strong>Year:</strong> ${d.year}<br/>
+								<strong>Fall:</strong> ${d.fall}<br/>
+								<strong>Latitude:</strong> ${d.rec_lat}<br/>
+								<strong>Longitude:</strong> ${d.rec_long}<br/>
+							`)
+								.style("left",  (event.pageX + 5) + "px")
+								.style("top",   (event.pageY - 28) + "px");
+							})
+							.on("mousemove", (event, d) => {
+								//if (currentScale > showAt) {
+								tooltip
+									.style("left", (event.pageX + 5) + "px")
+									.style("top",  (event.pageY - 28) + "px");
+							})
+							.on("mouseout", () => {
+								tooltip.transition().duration(500).style("opacity", 0);
+							});	
+						
+                    d3.selectAll(".legend-checkbox").each(function() {
+                        const cat    = this.value;
+                        const swatch = d3.select(this.parentNode).select(".legend-swatch");
+                        swatch.style("background-color", color(cat));
+                    });
+	
+					function updateLegend() {
+						d3.selectAll(".legend-checkbox").each(function() {
+						var cat     = this.value;
+							var checked = this.checked;
+							// match the edited class name from above
+							var sel = cat.replace(/[:\s]/g,"_");
+							mapGroup.selectAll(`circle.category-${sel}`)
+								.attr("display", checked ? null : "none");
+						});
+					}
+
+					// set listener on each checkbox
+					d3.selectAll(".legend-checkbox")
+					.on("change", updateLegend);
+
+					// run once to initialize
+					updateLegend();
+                console.log(`Loaded ${meteorData.length} meteorites`, meteorData, categories);
+				});
+
+			}).catch(err => console.error(err));
+
+			// Histogram
+			d3.csv("meteor_mass_data.csv", d3.autoType).then(mass_data => {
+				// classes to stack
+				const classes = Array.from(new Set(mass_data.map(d => d.meteorite_class)));
+				console.log("meteorite_class values:",classes);
+				// chart dimensions (match map width of 1200)
+				const width       = 1200,
+						height      = 780,
+						margin      = { top: 20, right: 20, bottom: 20, left: 50 },
+						innerWidth  = width  - margin.left - margin.right,
+						innerHeight = height - margin.top  - margin.bottom;
+
+				// Need to add padding to include largest mass
+				const masses  = mass_data.map(d => d.mass);
+				const minMass = d3.min(masses);
+				const maxMass = d3.max(masses);
+				const binCount = 40;
+				const binWidth = (maxMass - minMass) / binCount;
+				const paddedMax = maxMass + binWidth;
+
+				// bin the data by mass
+				const bins = d3.bin()
+					//.domain(d3.extent(mass_data, d => d.mass))
+					.domain([minMass, paddedMax])
+					.thresholds(40)
+					.value(d => d.mass)
+					(mass_data);
+
+				// convert each bin into an object with counts per class
+				const binCounts = bins.map(bin => {
+					const obj = { x0: bin.x0, x1: bin.x1 };
+					classes.forEach(c => obj[c] = 0);
+					bin.forEach(d => obj[d.meteorite_class]++);
+					return obj;
+				});
+
+				// stack layout
+				const stack = d3.stack()
+					.keys(classes)
+					.offset(d3.stackOffsetNone);
+
+				const series = stack(binCounts);
+
+				// scales
+				const x = d3.scaleLinear()
+					.domain([bins[0].x0, bins[bins.length-1].x1])
+					.range([0, innerWidth]);
+
+				const y = d3.scaleLinear()
+					.domain([0, d3.max(binCounts, d => 
+					classes.reduce((sum, c) => sum + d[c], 0)
+					)])
+					.nice()
+					.range([innerHeight, 0]);
+				
+				// use same color scheme for type as map
+				const color = d3.scaleOrdinal()
+					.domain(classes)
+					//.range(classes.map((_,i) => d3.schemePaired[i])); 
+					.range([
+						"#0072B2", // orange Achondrite
+						"#D55E00", // blue Chondrite
+						"#F0E442", // lavender Stony-iron
+						"#CC79A7", // yellow Iron
+						"#009E73", // green Other
+					]);
+
+				// SVG
+				const svg = d3.select("#histogram")
+					.append("svg")
+						.attr("width",  width)
+						.attr("height", height)
+					.append("g")
+						.attr("transform", `translate(${margin.left},${margin.top})`);
+				svg.insert("rect", ":first-child")
+					.attr("x",      0)
+					.attr("y",      0)
+					.attr("width",  innerWidth)
+					.attr("height", innerHeight)
+					.attr("fill",   "#ccc")
+					.style("pointer-events", "none");;
+
+				// draw the stacks
+				svg.selectAll("g.layer")
+					.data(series)
+					.enter().append("g")
+						.attr("class", "layer")
+						.attr("fill", d => color(d.key))
+					.selectAll("rect")
+					.data(d => d)
+					.enter().append("rect")
+						.attr("x",      d => x(d.data.x0) + 1)
+						.attr("width",  d => Math.max(0, x(d.data.x1) - x(d.data.x0) - 1))
+						.attr("y",      d => y(d[1]))
+						.attr("height", d => y(d[0]) - y(d[1]))
+						.attr("shape-rendering", "crispEdges")
+						.attr("stroke", "transparent")
+						.attr("stroke-width", 4)
+						.style("pointer-events", "all")
+						.on("mouseover", (event, d) => {
+							// convert log10 bin values back to mass values
+							const log0 = d.data.x0,
+								log1 = d.data.x1,
+								mass0 = Math.pow(10, log0),
+								mass1 = Math.pow(10, log1);
+							// show decimals for smaller masses
+							const formt = d3.format(".3s");
+							const key = d3.select(event.currentTarget.parentNode).datum().key;
+							console.log("series key:", key);
+							console.log("bin data object:", d.data);
+							console.log("d.data[key]:", d.data[key]);
+							tooltip
+								.style("opacity", 0.9)
+								.html(`								
+								<strong>Type:</strong> ${d3.select(event.currentTarget.parentNode).datum().key}<br/>
+								<strong>Bin:</strong> (${d.data.x0.toFixed(1)}, ${d.data.x1.toFixed(1)})<br/>
+								<strong>Mass range:</strong> ${formt(mass0)} to 
+									${formt(mass1)} grams<br/>
+								<strong>Count:</strong> ${d.data[d3.select(event.currentTarget.parentNode).datum().key]}
+								`)
+								.style("left",  (event.pageX + 5) + "px")
+								.style("top",   (event.pageY - 28) + "px");
+							})
+							.on("mousemove", event => {
+							tooltip
+								.style("left",  (event.pageX + 5) + "px")
+								.style("top",   (event.pageY - 28) + "px");
+							})
+							.on("mouseout", () => {
+							tooltip.style("opacity", 0);
+						});
+
+				// add axes
+				svg.append("g")
+					.attr("class", "x-axis")
+					.attr("transform", `translate(0,${innerHeight})`)
+					.call(d3.axisBottom(x).ticks(10, ".1s"))
+					.append("text")
+						.attr("x", innerWidth)
+						.attr("y", margin.bottom + 10)
+						.attr("fill","currentColor")
+						.attr("text-anchor","end")
+						.text("Log₁₀(mass in grams)");
+
+				svg.append("g")
+					.call(d3.axisLeft(y).ticks(5))
+					.append("text")
+						.attr("x",-margin.left)
+						.attr("y",-10)
+						.attr("fill","currentColor")
+						.attr("text-anchor","start")
+						.text("Count");
+				
+				//svg.selectAll("g.layer").raise();
+				svg.select(".x-axis").lower();
+				svg.select(".y-axis")?.lower(); 
+
+			});
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Project Documentation</title>
+
+<script src="Project_Documentation_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="Project_Documentation_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="Project_Documentation_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="Project_Documentation_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="Project_Documentation_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="Project_Documentation_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="Project_Documentation_files/navigation-1.1/tabsets.js"></script>
+<link href="Project_Documentation_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="Project_Documentation_files/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Project Documentation</h1>
+
+</div>
+
+
+<p>NEWM-N328 Final Project<br />
+E. Amacker<br />
+May 1, 2025</p>
+<div id="meteorite-insights-documentation-page" class="section level3">
+<h3><strong>Meteorite Insights Documentation Page</strong></h3>
+<p><br> <!-- one blank HTML line --></p>
+<div id="video-demonstration" class="section level4">
+<h4><strong>Video Demonstration</strong></h4>
+<video controls style="width:80%; margin-bottom:1rem;">
+  <source src="videos/demo_video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+<p><br> <!-- one blank HTML line --></p>
+<p><strong><u>The Dataset</u></strong></p>
+<p>Kaggle’s Meteorite Landings dataset contains 45,716 items (recorded
+meteorites) and ten attributes:</p>
+<ul>
+<li><p><strong>name</strong> – meteorite name</p></li>
+<li><p><strong>id</strong> – unique numeric identifier</p></li>
+<li><p><strong>nametype</strong> – “Valid” or “Relict” (highly
+weathered)</p></li>
+<li><p><strong>recclass</strong> – meteorite classification</p></li>
+<li><p><strong>mass</strong> – mass in grams</p></li>
+<li><p><strong>fall</strong> – “Fell” (observed) or “Found”</p></li>
+<li><p><strong>year</strong> – year of discovery</p></li>
+<li><p><strong>reclat</strong>, <strong>reclong</strong> – latitude and
+longitude</p></li>
+<li><p><strong>GeoLocation</strong> – formatted (lat, long)
+pair</p></li>
+</ul>
+<p>These records originally came from NASA’s Data Portal (now offline)
+and ultimately from The Meteoritical Society’s Bulletin Database. The
+“rec” prefix means “recommended” by The Meteoritical Society (NASA,
+n.d.).</p>
+<p><br> <!-- one blank HTML line --></p>
+<p><strong><u>Data Analysis and Cleaning</u></strong></p>
+<p>R was used to examine and clean the dataset. One of my initial
+questions concerned identifying meteorite classes and exploring whether
+patterns in location and/or mass existed based on class. A count of
+unique recclass values in R revealed over 450 distinct classes,
+prompting further investigation into meteorite classifications through
+various sources. Meteorites are primarily categorized into three types:
+Stony, Stony-iron, and Iron, each further divided into specific groups
+and classes. To visualize every meteorite location meaningfully and
+identify potential patterns, I assigned meteorite types based on their
+recclass. This classification relied on widely accepted sources,
+including the Meteorite Classification article from Wikipedia
+(Wikipedia, 2024) and the Meteorite Classification Chart from the
+Kentucky Geological Survey Meteorite Database (Kentucky Geological
+Survey, 2023). As a result, I identified five categories: Stony:
+Chondrite, Stony: Achondrite, Stony-iron, Iron, and Other. Two columns
+were added to the dataset: meteorite_type (Stony, Stony-iron, Iron, and
+Other) and meteorite_class to distinguish Chondrite from Achondrite
+within the Stony type.</p>
+<p>With categorical classification established, additional questions
+arose: What percentage of the total does each meteorite type represent?
+How is mass distributed, and are there any type-specific patterns? Do
+certain meteorite types predominantly appear in particular
+locations?</p>
+<p>To address data integrity, I removed entries with missing mass or
+location values, reducing the dataset to 44,010 records. Subsequently, I
+used Tableau to perform a preliminary exploratory visual analysis to
+guide the visualization design. Initially, Tableau visualizations
+included Primitive Achondrites as a separate category; however, in my
+final visualization, these meteorites were incorporated into the
+Achondrite type. Below are my Tableau visualizations:</p>
+<p><img src="figures/Tableau_Image_1.png" width="50%" style="margin-bottom:1rem;">
+<img src="figures/Tableau_Image_2.png" width="50%" style="margin-bottom:1rem;">
+<img src="figures/Tableau_Image_3.png" width="50%" style="margin-bottom:1rem;">
+<img src="figures/Tableau_Image_4.png" width="50%" style="margin-bottom:1rem;"></p>
+<p><br> <!-- one blank HTML line --> <strong><u>Final
+Design</u></strong></p>
+<p>I chose to focus on two visualizations: a world map showing meteorite
+locations and a histogram depicting mass distribution. The map and
+histogram were designed to address these questions: What percentage of
+the total does each meteorite type represent? What is the distribution
+of mass, and are there patterns related to meteorite type? Are different
+meteorite types predominantly found in particular locations? The
+histogram of mass distribution is intended to provides insight into the
+range of meteorite masses and specific trend in ass by type.</p>
+<p>I selected the equirectangular projection over Mercator or
+orthographic to ensure the entire map would be clearly visible at an
+optimal scale on the webpage, aiding pattern recognition. The map
+features a white background with dark grey landmasses outlined in black,
+providing effective contrast and emphasizing geographic features.
+Circles represent meteorite locations, plotted according to longitude
+and latitude coordinates (x, y). I chose five categorical hues from the
+colorblind-friendly, qualitative Okabe–Ito 8-color palette to encode the
+type attribute. Each circle has a black stroke added for emphasis. A
+legend with filtering is positioned above the map, enabling users to
+isolate combinations of meteorite types. An Interactive tooltip provides
+detailed information about each meteorite on demand, notably the
+recommended meteorite class. Additionally, zooming and panning features
+improve resolution for closely clustered meteorites, complemented by a
+"reset view" button outside the map that restores the original view.
+Jitter was applied to slightly offset meteorites with identical
+coordinates. I chose not to encode circle size based on mass due to
+potential obscuring; instead, mass data is explored separately in the
+histogram and is available in the tooltip. Overall, the map adheres to
+Ben Shneiderman’s Information–Seeking Mantra: "Overview first, zoom and
+filter, then details on demand."</p>
+<p>For the mass histogram, I adapted example code from the D3 Gallery
+Histogram to develop a stacked histogram categorized by meteorite type.
+The same color scheme from the map was used to maintain consistency. A
+light grey background enhances contrast, improving hue visibility. Given
+the extensive mass range, I implemented a log10 scale. A tooltip
+provides additional context, including bin details, mass ranges for the
+bin, and meteorite counts, enhancing understanding of the log scale. I
+opted for a stacked bar format because it provides insights into
+meteorite mass distributions, emphasizing the general size of meteorites
+and mass-related trends across different meteorite types. Although I
+encountered difficulty implementing zoom and pan features to reset the
+histogram to its initial axis view, such functionality would have
+facilitated closer examination of bins with smaller counts.</p>
+<p><br> <!-- one blank HTML line --></p>
+<p><strong><u>Findings</u></strong></p>
+<p>An outlier off the coast of Africa prompted me to review this item in
+the dataset. It revealed that three points were piled at (0°, 0°)—Nova
+006, Nova 010, and Nova 011. A lookup in the Meteoritical Bulletin
+Database confirmed that the exact landing location for these specimens
+are unknown. This prompted me to apply jitter to all of the circles to
+reveal them visually. The Nova meteorites with jitter offset added is
+shown below.</p>
+<p><img src="figures/Jitter.png" width="50%" style="margin-bottom:1rem;"></p>
+<p>The mass histogram (log₁₀ scale) is roughly bell-shaped with a slight
+right skew. Most meteorites fall between log₁₀ 0.5 and 2 (≈ 3 g–100 g),
+peaking near log₁₀ 1.5 (∼ 30 g). On the raw scale the distribution would
+be extremely right-skewed; the log transform makes it far more
+interpretable and reveals each type’s contribution:</p>
+<ul>
+<li><p><strong>Chondrites</strong> dominate every bin.</p></li>
+<li><p><strong>Achondrites</strong> form a smaller, steady slice in the
+mid-range.</p></li>
+<li><p><strong>Stony-iron</strong> appear occasionally in middle
+bins.a</p></li>
+<li><p><strong>Iron</strong> grow in proportion at the high-mass tail
+(log₁₀ &gt; 2.5, &gt; 300 g).</p></li>
+<li><p><strong>Other</strong> meteorites are nearly absent and are found
+in the lowest bins (smallest masses).</p></li>
+</ul>
+<p>Both the map and histogram confirm that stony meteorites, especially
+chondrites, are by far the most abundant. The geographic pattern of the
+locations on the map suggests that landings and/or discoveries
+concentrate in more developed regions. Adding a
+physical-terrain/vegetation overlay (mountains, rainforest, ice cover)
+would possibly provide more insight. Further manual categorization of
+the meteorites to produce separate percent of total bar charts and
+per-type histograms side-by-side would be great next steps.</p>
+<p><br> <!-- one blank HTML line --></p>
+<p><strong><u>Sources:</u></strong></p>
+<p>D3. (n.d.). Histogram. Observable. Retrieved April 8, 2025, from <a
+href="https://observablehq.com/@d3/histogram/2"
+class="uri">https://observablehq.com/@d3/histogram/2</a></p>
+<p>FreeCodeCamp. (n.d.). Visualize data | Map data across the globe –
+D3.js [Video]. YouTube. Retrieved April 15, 2025, from <a
+href="https://www.youtube.com/watch?v=dJbpo8R47D0"
+class="uri">https://www.youtube.com/watch?v=dJbpo8R47D0</a></p>
+<p>Kentucky Geological Survey. (2023, January 5). Meteorite Database.
+University of Kentucky. Retrieved April 5, 2025, from <a
+href="https://www.uky.edu/KGS/rocksmineral/meteorite-database.php#"
+class="uri">https://www.uky.edu/KGS/rocksmineral/meteorite-database.php#</a></p>
+<p>Lunar and Planetary Institute. (n.d.). The Meteoritical Society’s
+Meteorite Database. Retrieved May 1, 2025, from <a
+href="https://www.lpi.usra.edu/meteor/"
+class="uri">https://www.lpi.usra.edu/meteor/</a></p>
+<p>NASA. (n.d.). Meteorite Landings [Data set]. NASA Open Data Portal.
+Retrieved May 1, 2025, from <a
+href="https://data.nasa.gov/Space-Science/Meteorite-Landings/gh4g-9sfh"
+class="uri">https://data.nasa.gov/Space-Science/Meteorite-Landings/gh4g-9sfh</a></p>
+<p>Siegal Lab. (n.d.). Color palette. Siegal Lab. Retrieved May 1, 2025,
+from <a href="https://siegal.bio.nyu.edu/color-palette/"
+class="uri">https://siegal.bio.nyu.edu/color-palette/</a></p>
+<p>Wikipedia. (2024, April 15). Meteorite classification. In Wikipedia.
+Retrieved April 5, 2025, from <a
+href="https://en.wikipedia.org/wiki/Meteorite_classification"
+class="uri">https://en.wikipedia.org/wiki/Meteorite_classification</a></p>
+<p><br> <!-- one blank HTML line --> <br>
+<!-- one blank HTML line --></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
